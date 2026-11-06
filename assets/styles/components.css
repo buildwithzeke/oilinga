@@ -1,0 +1,10 @@
+@import url('./tokens.css');
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--oilinga-warm-cream); color: var(--oilinga-charcoal); font-family: var(--font-sans); }
+.oilinga-card { background: #fff; border: 1px solid rgba(35,75,54,.10); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+.oilinga-button { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.8rem 1.15rem; border:0; border-radius:999px; font:600  .95rem var(--font-sans); cursor:pointer; }
+.oilinga-button--primary { background:var(--oilinga-deep-green); color:#fff; }
+.oilinga-button--accent { background:var(--oilinga-harvest-gold); color:var(--oilinga-charcoal); }
+.oilinga-button--secondary { background:var(--oilinga-palm-red); color:#fff; }
+.oilinga-input { width:100%; padding:.85rem 1rem; border:1px solid #d8d0c4; border-radius:var(--radius-md); background:#fff; color:var(--oilinga-charcoal); }
+.oilinga-badge { display:inline-flex; padding:.3rem .65rem; border-radius:999px; background:rgba(217,154,50,.18); color:var(--oilinga-charcoal); font-size:.78rem; font-weight:700; }

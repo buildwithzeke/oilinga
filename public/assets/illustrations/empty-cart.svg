@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
+  <rect x="18" y="18" width="284" height="204" rx="24" fill="#FFF4E7"/>
+  <circle cx="160" cy="100" r="54" fill="#D99A32" opacity=".12"/>
+  <g transform="translate(136 76)" fill="none" stroke="#D99A32" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18H8L5 5H2"/><path d="M8 18l-1 3h12"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/><path d="M7 8h14l-2 8H9"/></g>
+  <text x="160" y="184" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#282522">Your cart is waiting</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
+  <rect x="18" y="18" width="284" height="204" rx="24" fill="#FFF4E7"/>
+  <circle cx="160" cy="100" r="54" fill="#234B36" opacity=".12"/>
+  <g transform="translate(136 76)" fill="none" stroke="#234B36" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m7.5 12 3 3 6-6"/></g>
+  <text x="160" y="184" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#282522">Payment successful</text>
+</svg>
