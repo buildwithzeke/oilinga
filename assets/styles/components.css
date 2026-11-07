@@ -1,10 +1,853 @@
-@import url('./tokens.css');
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--oilinga-warm-cream); color: var(--oilinga-charcoal); font-family: var(--font-sans); }
-.oilinga-card { background: #fff; border: 1px solid rgba(35,75,54,.10); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
-.oilinga-button { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.8rem 1.15rem; border:0; border-radius:999px; font:600  .95rem var(--font-sans); cursor:pointer; }
-.oilinga-button--primary { background:var(--oilinga-deep-green); color:#fff; }
-.oilinga-button--accent { background:var(--oilinga-harvest-gold); color:var(--oilinga-charcoal); }
-.oilinga-button--secondary { background:var(--oilinga-palm-red); color:#fff; }
-.oilinga-input { width:100%; padding:.85rem 1rem; border:1px solid #d8d0c4; border-radius:var(--radius-md); background:#fff; color:var(--oilinga-charcoal); }
-.oilinga-badge { display:inline-flex; padding:.3rem .65rem; border-radius:999px; background:rgba(217,154,50,.18); color:var(--oilinga-charcoal); font-size:.78rem; font-weight:700; }
+/* ==========================================================================
+   Oilinga Design System — Components
+   Every component is token-driven and responsive by default.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Eyebrow
+   -------------------------------------------------------------------------- */
+
+.oi-eyebrow {
+    display: inline-block;
+    color: var(--gold-300);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: 0.115em;
+    text-transform: uppercase;
+}
+
+.oi-eyebrow--green {
+    color: var(--color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Section
+   -------------------------------------------------------------------------- */
+
+.oi-section {
+    margin-block: var(--section-gap);
+}
+
+.oi-section__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-bottom: var(--space-5);
+}
+
+.oi-section__title {
+    margin: var(--space-1) 0 0;
+    font-size: var(--text-2xl);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+}
+
+.oi-section__action {
+    flex: none;
+    padding-bottom: var(--space-1);
+    color: var(--color-primary);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+}
+
+.oi-section__action:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.oi-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 12px 19px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+        transform var(--duration-base) var(--ease-out),
+        background-color var(--duration-base) var(--ease-out),
+        border-color var(--duration-base) var(--ease-out),
+        filter var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out);
+}
+
+.oi-btn:hover {
+    transform: translateY(-1px);
+}
+
+.oi-btn:active {
+    transform: translateY(0);
+}
+
+.oi-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.oi-btn[disabled],
+.oi-btn[aria-disabled="true"] {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.oi-btn--primary {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.oi-btn--primary:hover {
+    background: var(--color-primary-hover);
+}
+
+.oi-btn--gold {
+    background: var(--color-accent);
+    color: #211b10;
+}
+
+.oi-btn--gold:hover {
+    background: var(--gold-400);
+}
+
+.oi-btn--danger {
+    background: var(--color-danger);
+    color: var(--color-text-inverse);
+}
+
+.oi-btn--danger:hover {
+    background: var(--color-danger-hover);
+}
+
+.oi-btn--outline {
+    border-color: var(--color-border-strong);
+    background: transparent;
+    color: var(--color-text);
+}
+
+.oi-btn--outline:hover {
+    border-color: var(--color-primary);
+    background: var(--green-50);
+}
+
+.oi-btn--ghost {
+    padding-inline: var(--space-2);
+    background: transparent;
+    color: var(--color-primary);
+}
+
+.oi-btn--ghost:hover {
+    background: var(--green-50);
+}
+
+.oi-btn--glass {
+    border-color: rgba(255, 255, 255, 0.68);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-inverse);
+}
+
+.oi-btn--glass:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.oi-btn--sm {
+    padding: 9px 14px;
+    font-size: var(--text-xs);
+}
+
+.oi-btn--lg {
+    padding: 14px 22px;
+    font-size: var(--text-base);
+}
+
+.oi-btn--block {
+    width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Icon button
+   -------------------------------------------------------------------------- */
+
+.oi-icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 39px;
+    height: 39px;
+    flex: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface-raised);
+    color: var(--color-primary);
+    transition:
+        background-color var(--duration-base) var(--ease-out),
+        border-color var(--duration-base) var(--ease-out),
+        transform var(--duration-base) var(--ease-out);
+}
+
+.oi-icon-btn:hover {
+    border-color: var(--green-200);
+    background: var(--green-50);
+    transform: translateY(-1px);
+}
+
+.oi-icon-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+/* --------------------------------------------------------------------------
+   Badges
+   -------------------------------------------------------------------------- */
+
+.oi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 4px 8px;
+    border-radius: var(--radius-pill);
+    background: var(--gold-100);
+    color: var(--gold-800);
+    font-size: 0.5rem;
+    font-weight: var(--weight-extrabold);
+    letter-spacing: 0.055em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.oi-badge--neutral {
+    background: var(--cream-50);
+    color: var(--color-primary);
+}
+
+.oi-badge--green {
+    background: var(--green-100);
+    color: var(--color-primary);
+}
+
+.oi-badge--gold {
+    background: var(--gold-100);
+    color: var(--gold-800);
+}
+
+.oi-badge--red {
+    background: var(--red-100);
+    color: var(--red-800);
+}
+
+.oi-badge--blue {
+    background: var(--color-info-soft);
+    color: var(--color-info);
+}
+
+.oi-badge--pending {
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+}
+
+.oi-badge--shipped {
+    background: var(--color-info-soft);
+    color: var(--color-info);
+}
+
+.oi-badge--delivered {
+    background: var(--color-success-soft);
+    color: var(--color-success);
+}
+
+/* --------------------------------------------------------------------------
+   Cards
+   -------------------------------------------------------------------------- */
+
+.oi-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.oi-card--pad {
+    padding: var(--space-5);
+}
+
+.oi-card--interactive {
+    transition:
+        transform var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out);
+}
+
+.oi-card--interactive:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* --------------------------------------------------------------------------
+   Form fields
+   -------------------------------------------------------------------------- */
+
+.oi-field {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.oi-field__label {
+    color: var(--color-text);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+}
+
+.oi-field__hint {
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+}
+
+.oi-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    transition:
+        border-color var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out);
+}
+
+.oi-input::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.oi-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: var(--focus-ring);
+}
+
+.oi-input--sm {
+    height: 38px;
+    padding-inline: var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+}
+
+/* Search ------------------------------------------------------------------ */
+
+.oi-search {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 42px;
+    width: 210px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-raised);
+    transition:
+        border-color var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out);
+}
+
+.oi-search:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: var(--focus-ring);
+}
+
+.oi-search__icon {
+    flex: none;
+    color: var(--color-primary);
+    opacity: 0.7;
+}
+
+.oi-search input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-text);
+    font-size: var(--text-xs);
+}
+
+.oi-search input::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.oi-search__submit {
+    flex: none;
+    padding: 8px 15px;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.oi-search__submit:hover {
+    background: var(--color-primary-hover);
+}
+
+.oi-search--lg {
+    width: min(400px, 100%);
+    height: 48px;
+    border-radius: var(--radius-md);
+}
+
+.oi-search--lg input {
+    font-size: var(--text-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Avatar
+   -------------------------------------------------------------------------- */
+
+.oi-avatar {
+    display: inline-grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    flex: none;
+    border-radius: var(--radius-full);
+    background: var(--gold-200);
+    color: var(--color-primary);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-extrabold);
+}
+
+/* --------------------------------------------------------------------------
+   Divider
+   -------------------------------------------------------------------------- */
+
+.oi-divider {
+    height: 1px;
+    margin-block: var(--space-4);
+    border: 0;
+    background: var(--color-border);
+}
+
+/* --------------------------------------------------------------------------
+   Trust row
+   -------------------------------------------------------------------------- */
+
+.oi-trust {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 21px 14px;
+    margin: 17px 0 43px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.oi-trust__item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 3px 24px;
+    border-right: 1px solid var(--color-border);
+}
+
+.oi-trust__item:last-child {
+    border-right: 0;
+}
+
+.oi-trust__icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border-radius: var(--radius-md);
+    background: var(--green-50);
+    color: var(--color-primary);
+}
+
+.oi-trust__text {
+    display: grid;
+    gap: 2px;
+}
+
+.oi-trust__title {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+}
+
+.oi-trust__caption {
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+}
+
+/* --------------------------------------------------------------------------
+   Category cards
+   -------------------------------------------------------------------------- */
+
+.oi-category-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+}
+
+.oi-category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 17px 13px 15px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    text-align: left;
+    transition:
+        transform var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out);
+}
+
+.oi-category-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.oi-category-card__icon {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 64px;
+    margin-bottom: 14px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(140deg, var(--gold-100), var(--gold-200));
+    font-size: 34px;
+}
+
+.oi-category-card__name {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+}
+
+.oi-category-card__caption {
+    margin-top: 5px;
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+}
+
+/* --------------------------------------------------------------------------
+   Product cards
+   -------------------------------------------------------------------------- */
+
+.oi-product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.oi-product-grid--compact {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.oi-product-card {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    transition:
+        transform var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out);
+}
+
+.oi-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.oi-product-card__art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 176px;
+    overflow: hidden;
+}
+
+.oi-product-card__art--palm {
+    background: linear-gradient(145deg, #f5dfb4, #f1c575);
+}
+
+.oi-product-card__art--refined {
+    background: linear-gradient(145deg, #fbebc8, #e4b954);
+}
+
+.oi-product-card__art--kernel {
+    background: linear-gradient(145deg, #d8d0ad, #8f8b5a);
+}
+
+.oi-product-card__art--groundnut {
+    background: linear-gradient(145deg, #f0dfbd, #c99652);
+}
+
+.oi-product-card__glyph {
+    color: #a94817;
+    font-size: 76px;
+    line-height: 1;
+    text-shadow: 0 4px 5px rgba(87, 48, 18, 0.19);
+    transform: scaleX(0.78);
+}
+
+.oi-product-card__art--refined .oi-product-card__glyph {
+    color: #cc951c;
+}
+
+.oi-product-card__art--kernel .oi-product-card__glyph {
+    color: #50452a;
+}
+
+.oi-product-card__art--groundnut .oi-product-card__glyph {
+    text-shadow: none;
+    transform: none;
+    filter: drop-shadow(0 5px 4px rgba(51, 51, 51, 0.2));
+}
+
+.oi-product-card__tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font-size: 0.5rem;
+    letter-spacing: 0.055em;
+}
+
+.oi-product-card__body {
+    padding: 14px 15px 13px;
+}
+
+.oi-product-card__seller {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--color-primary);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-bold);
+}
+
+.oi-product-card__name {
+    margin: 7px 0 5px;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-normal);
+}
+
+.oi-product-card__meta {
+    margin-bottom: 13px;
+    color: var(--color-text-muted);
+    font-size: var(--text-2xs);
+}
+
+.oi-product-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 11px;
+    border-top: 1px solid var(--color-border);
+}
+
+.oi-product-card__price {
+    font-size: var(--text-md);
+    font-weight: var(--weight-bold);
+}
+
+.oi-add-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    flex: none;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    transition:
+        background-color var(--duration-base) var(--ease-out),
+        transform var(--duration-base) var(--ease-out);
+}
+
+.oi-add-btn:hover {
+    background: var(--color-primary-hover);
+    transform: scale(1.06);
+}
+
+.oi-add-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+/* --------------------------------------------------------------------------
+   Empty state
+   -------------------------------------------------------------------------- */
+
+.oi-empty {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+    padding: var(--space-10) var(--space-6);
+    text-align: center;
+}
+
+.oi-empty img {
+    width: min(260px, 100%);
+}
+
+.oi-empty h3 {
+    margin: 0;
+    font-size: var(--text-xl);
+}
+
+.oi-empty p {
+    max-width: 38ch;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Toast
+   -------------------------------------------------------------------------- */
+
+.oi-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    z-index: var(--z-toast);
+    padding: 13px 20px;
+    border-radius: var(--radius-pill);
+    background: var(--green-900);
+    color: var(--color-text-inverse);
+    font-size: var(--text-sm);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px);
+    transition:
+        opacity var(--duration-base) var(--ease-out),
+        transform var(--duration-base) var(--ease-out);
+}
+
+.oi-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* --------------------------------------------------------------------------
+   Component responsive rules
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+    .oi-trust__item {
+        padding-inline: 12px;
+    }
+
+    .oi-trust__title {
+        font-size: var(--text-2xs);
+    }
+}
+
+@media (max-width: 760px) {
+    .oi-section {
+        margin-block: var(--space-8);
+    }
+
+    .oi-section__title {
+        font-size: 1.375rem;
+    }
+
+    .oi-section__action {
+        font-size: var(--text-2xs);
+    }
+
+    .oi-trust {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 11px;
+        margin: 12px 0 32px;
+    }
+
+    .oi-trust__item {
+        padding: 10px 9px;
+        border-right: 0;
+    }
+
+    .oi-trust__item:nth-child(odd) {
+        border-right: 1px solid var(--color-border);
+    }
+
+    .oi-trust__icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .oi-trust__title {
+        font-size: var(--text-2xs);
+    }
+
+    .oi-trust__caption {
+        font-size: 0.5625rem;
+    }
+
+    .oi-category-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+    }
+
+    .oi-category-card:last-child {
+        grid-column: span 2;
+    }
+
+    .oi-category-card {
+        padding: 12px;
+    }
+
+    .oi-category-card__icon {
+        height: 56px;
+    }
+
+    .oi-product-grid,
+    .oi-product-grid--compact {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .oi-product-card__art {
+        height: 132px;
+    }
+
+    .oi-product-grid--compact .oi-product-card__art {
+        height: 145px;
+    }
+
+    .oi-product-card__body {
+        padding: 11px;
+    }
+
+    .oi-product-card__name {
+        font-size: var(--text-xs);
+    }
+
+    .oi-product-card__meta {
+        font-size: 0.5625rem;
+    }
+
+    .oi-product-card__price {
+        font-size: var(--text-sm);
+    }
+
+    .oi-search--lg {
+        width: 100%;
+    }
+}

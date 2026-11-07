@@ -1,46 +1,51 @@
 "use client";
 
 import { useState } from "react";
-
-const products = [
-  { seller: "Palm Harvest Foods", name: "Premium Red Palm Oil", detail: "5 litres · Freshly pressed", price: "₦18,500", art: "oil-art", icon: "▥", tag: "BESTSELLER" },
-  { seller: "Adeola Farms", name: "Fresh Palm Fruits", detail: "Bulk available · Per basket", price: "₦12,000", art: "fruit-art", icon: "🌴", tag: "FRESH HARVEST" },
-  { seller: "Green Grove Co-op", name: "Pure Palm Kernel Oil", detail: "2 litres · Cold pressed", price: "₦9,800", art: "kernel-art", icon: "♜", tag: "POPULAR" },
-  { seller: "Mama Esi Oils", name: "Golden Refined Oil", detail: "3 litres · Kitchen ready", price: "₦14,200", art: "refined-art", icon: "▥", tag: "TOP RATED" },
-];
-
-function ProductGrid({ compact = false, add }: { compact?: boolean; add: () => void }) {
-  return <div className={`product-grid ${compact ? "compact" : ""}`}>{products.map((product) => <article className="product-card" key={product.name}>
-    <div className={`product-art ${product.art}`}><span className="tag">{product.tag}</span><span className={product.art === "fruit-art" ? "fruit" : "bottle"}>{product.icon}</span></div>
-    <div className="product-info"><small className="seller-label">✓ {product.seller}</small><h3>{product.name}</h3><p>{product.detail}</p><div className="product-bottom"><strong>{product.price}</strong><button className="add-button" onClick={add} aria-label={`Add ${product.name} to cart`}>+</button></div></div>
-  </article>)}</div>;
-}
+import type { Page, Product } from "@/lib/data";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { AboutView } from "@/components/views/AboutView";
+import { HomeView } from "@/components/views/HomeView";
+import { MarketplaceView } from "@/components/views/MarketplaceView";
+import { SellerDashboard } from "@/components/views/SellerDashboard";
+import { useToast } from "@/components/ui/Toast";
 
 export default function Home() {
-  const [page, setPage] = useState("home");
-  const [toast, setToast] = useState("");
-  const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(""), 2200); };
-  const go = (next: string) => { setPage(next); window.scrollTo({ top: 0, behavior: "smooth" }); };
-  const add = () => notify("Added to your cart");
-  return <>
-    <header className="topbar"><a className="brand" href="#home" onClick={() => go("home")}><img src="/assets/brand/oilinga-logo-transparent.png" alt="Oilinga — Buy, Sell and Grow" /></a><button className="menu-toggle" aria-label="Open navigation" onClick={() => document.querySelector(".main-nav")?.classList.toggle("open")}>☰</button><nav className="main-nav"><a className={page === "home" ? "active" : ""} href="#home" onClick={() => go("home")}>Home</a><a className={page === "marketplace" ? "active" : ""} href="#marketplace" onClick={() => go("marketplace")}>Marketplace</a><a className={page === "seller" ? "active" : ""} href="#seller" onClick={() => go("seller")}>For Sellers</a><a href="#about" onClick={() => go("about")}>About</a></nav><div className="nav-actions"><label className="search"><img src="/assets/icons/search.svg" alt="" /><input placeholder="Search palm oil…" aria-label="Search products" onKeyDown={(e) => { if (e.key === "Enter") go("marketplace"); }} /></label><button className="icon-button" aria-label="Wishlist" onClick={() => notify("Sign in to save your wishlist")}>♡</button><button className="button button-outline" onClick={() => notify("Account access is coming soon")}>Log in</button><button className="button button-red" onClick={() => notify("Account access is coming soon")}>Sign up</button></div></header>
-    <main>
-      {page === "home" && <div className="view active">
-        <section className="hero"><div className="hero-copy"><span className="eyebrow">Africa’s premier palm oil marketplace</span><h1>Buy, sell and grow<br />with <em>Oilinga</em></h1><p>Connecting palm oil producers, retailers and consumers across Africa.</p><div className="hero-actions"><button className="button button-gold" onClick={() => go("marketplace")}>Start shopping <span>→</span></button><button className="button button-glass" onClick={() => go("seller")}>Become a seller</button></div><div className="hero-proof"><span>✦ Verified local producers</span><span>✦ Secure checkout</span></div></div><div className="hero-photo"><img src="/assets/brand/oilinga-brand-visual-reference.png" alt="Oilinga marketplace brand vision" /></div></section>
-        <section className="trust-row">{[["◈", "Secure transactions", "Protected checkout"], ["↗", "Fast & reliable delivery", "From trusted sellers"], ["♧", "Trusted community", "Verified businesses"], ["☏", "Dedicated support", "Here when you need us"]].map(([icon, title, sub]) => <div key={title}><b>{icon}</b><span><strong>{title}</strong><small>{sub}</small></span></div>)}</section>
-        <section className="section"><div className="section-head"><div><span className="eyebrow green">Explore the marketplace</span><h2>Shop by category</h2></div><a href="#marketplace" onClick={() => go("marketplace")}>View all categories →</a></div><div className="category-grid">{[["🫙", "Crude Palm Oil", "Fresh from producers"], ["🧴", "Refined Palm Oil", "Ready for every kitchen"], ["🫒", "Palm Kernel Oil", "Quality you can trust"], ["🌴", "Palm Fruit", "Harvested with care"], ["🟤", "By-products", "More from the harvest"]].map(([icon, name, sub]) => <button className="category" key={name} onClick={() => go("marketplace")}><span className="category-icon">{icon}</span><strong>{name}</strong><small>{sub}</small></button>)}</div></section>
-        <section className="section"><div className="section-head"><div><span className="eyebrow green">Picked for you</span><h2>Featured products</h2></div><a href="#marketplace" onClick={() => go("marketplace")}>Explore marketplace →</a></div><ProductGrid add={add} /></section>
-        <section className="seller-banner"><div><span className="eyebrow">Your business, growing</span><h2>Bring your harvest<br />to the whole marketplace.</h2><p>Reach new buyers, manage your orders and grow with a community that values local producers.</p><button className="button button-gold" onClick={() => go("seller")}>Open your shop →</button></div><div className="banner-mark">🌴</div></section>
-      </div>}
-      {page === "marketplace" && <section className="view active"><div className="page-heading"><div><span className="eyebrow green">Discover Oilinga</span><h1>Marketplace</h1><p>Find quality palm products from trusted African producers.</p></div><label className="search large"><img src="/assets/icons/search.svg" alt="" /><input placeholder="Search products or shops…" /><button onClick={() => notify("Showing matching marketplace products")}>Search</button></label></div><div className="market-layout"><aside className="filters"><h3>Categories</h3>{["All products", "Crude palm oil", "Refined palm oil", "Palm kernel oil", "Palm fruit"].map((name, i) => <label key={name}><input type="checkbox" defaultChecked={!i} /> {name} <span>{[128, 34, 28, 19, 22][i]}</span></label>)}<hr /><h3>Shop type</h3><label><input type="checkbox" /> Producer</label><label><input type="checkbox" /> Retailer</label><hr /><h3>Price range</h3><div className="price-inputs"><input placeholder="Min ₦" /><input placeholder="Max ₦" /></div><button className="button button-green full" onClick={() => notify("Marketplace filters updated")}>Apply filters</button></aside><div><div className="result-bar"><span>Showing <b>128 products</b></span><select aria-label="Sort products"><option>Recommended</option><option>Price: low to high</option><option>Top rated</option></select></div><ProductGrid compact add={add} /></div></div></section>}
-      {page === "seller" && <SellerDashboard />}
-      {page === "about" && <section className="view active"><div className="about-card"><span className="eyebrow green">Rooted in Africa. Growing together.</span><h1>A marketplace built<br />to help every harvest thrive.</h1><p>Oilinga connects producers, retailers and consumers through a trusted marketplace for palm products. We make it easier for local businesses to reach new buyers, and simpler for everyone to find quality products.</p><button className="button button-green" onClick={() => go("marketplace")}>Explore Oilinga →</button><img src="/assets/brand/oilinga-brand-visual-reference.png" alt="Oilinga brand identity" /></div></section>}
-    </main>
-    <footer><div className="footer-main"><img src="/assets/brand/oilinga-logo-transparent.png" alt="Oilinga" /><p>Building a thriving agricultural marketplace in Africa.</p><div className="socials"><a aria-label="Facebook">f</a><a aria-label="Instagram">◎</a><a aria-label="LinkedIn">in</a></div></div><div className="footer-bottom"><span>© 2026 Oilinga. Buy · Sell · Grow.</span><span>About &nbsp; · &nbsp; Help centre &nbsp; · &nbsp; Privacy &nbsp; · &nbsp; Terms</span></div></footer>
-    <div className={`toast ${toast ? "show" : ""}`} role="status" aria-live="polite">{toast}</div>
-  </>;
-}
+    const [page, setPage] = useState<Page>("home");
+    const notify = useToast();
 
-function SellerDashboard() {
-  return <section className="view active"><div className="dashboard-shell"><aside className="sidebar"><img src="/assets/brand/oilinga-logo-transparent.png" alt="Oilinga" /><small>SELLER PORTAL</small>{["▦  Overview", "▧  My shop", "◫  Products", "▤  Orders", "◷  Inventory", "▥  Earnings", "◇  Subscription", "⚙  Settings"].map((item, i) => <a key={item} className={i === 0 ? "selected" : ""}>{item}</a>)}<div className="seller-profile"><span>AO</span><div><b>Agro Oils Ltd.</b><small>Verified seller</small></div></div></aside><div className="dashboard-content"><div className="dash-top"><div><small>THURSDAY, NOVEMBER 6</small><h1>Good morning, Amina <span>☀</span></h1><p>Here’s what’s happening with your shop today.</p></div><button className="button button-gold">＋ Add product</button></div><div className="trial-note"><span>✦</span><div><b>Your free trial is active</b><small>12 days remaining · Your trial started when your shop was approved.</small></div><a>View plans →</a></div><div className="metrics">{[["Total sales", "₦842,500", "↗ 12.8% this month"], ["Total orders", "64", "↗ 8 new this week"], ["Pending orders", "3", "Need your attention"], ["Available balance", "₦126,400", "After 2% commission"]].map(([title, total, sub]) => <article key={title}><small>{title}</small><strong>{total}</strong><span className={sub.startsWith("↗") ? "up" : ""}>{sub}</span></article>)}</div><div className="dash-grid"><article className="dash-card chart-card"><div className="card-head"><div><h3>Sales performance</h3><small>Your revenue over the last 7 days</small></div><select><option>This week</option></select></div><div className="chart"><div className="y-axis"><span>₦200k</span><span>₦150k</span><span>₦100k</span><span>₦50k</span></div><svg viewBox="0 0 600 170" preserveAspectRatio="none" aria-label="Sales rising through the week"><defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#234b36" stopOpacity=".22" /><stop offset="1" stopColor="#234b36" stopOpacity="0" /></linearGradient></defs><path d="M0 132 C45 125 50 104 95 110 S150 130 190 85 S240 97 285 70 S340 98 380 65 S430 87 475 43 S540 52 600 14 L600 170 L0 170Z" fill="url(#fill)" /><path d="M0 132 C45 125 50 104 95 110 S150 130 190 85 S240 97 285 70 S340 98 380 65 S430 87 475 43 S540 52 600 14" fill="none" stroke="#234b36" strokeWidth="4" strokeLinecap="round" /></svg></div><div className="x-axis"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></article><article className="dash-card"><div className="card-head"><div><h3>Top products</h3><small>By units sold</small></div><a>See all →</a></div>{products.slice(0, 3).map((product, i) => <div className="top-product" key={product.name}><span className={`mini-art ${product.art}`}>{product.icon}</span><div><b>{product.name}</b><small>{[42, 28, 16][i]} sold</small></div><strong>{["₦315k", "₦196k", "₦124k"][i]}</strong></div>)}</article><article className="dash-card orders-card"><div className="card-head"><div><h3>Recent orders</h3><small>Latest customer orders</small></div><a>View orders →</a></div><div className="table-wrap"><table><thead><tr><th>ORDER</th><th>CUSTOMER</th><th>DATE</th><th>AMOUNT</th><th>STATUS</th></tr></thead><tbody>{[["#OL-2084", "Chinwe Okafor", "Today, 9:42", "₦46,500", "Processing"], ["#OL-2081", "David Mensah", "Today, 8:16", "₦18,500", "Shipped"], ["#OL-2075", "Fatima Bello", "Yesterday", "₦37,000", "Delivered"]].map(([id, name, date, amount, status]) => <tr key={id}><td>{id}</td><td>{name}</td><td>{date}</td><td>{amount}</td><td><span className={`status ${status === "Processing" ? "pending" : status === "Shipped" ? "shipped" : "delivered"}`}>{status}</span></td></tr>)}</tbody></table></div></article><article className="dash-card inventory-alert"><div className="card-head"><div><h3>Inventory alerts</h3><small>Products running low</small></div><a>Manage inventory →</a></div><p><span className="alert-dot" /> Pure Palm Kernel Oil <b>Only 4 left</b></p><p><span className="alert-dot gold-dot" /> Fresh Palm Fruits <b>Only 8 left</b></p></article></div></div></div></section>;
+    function navigate(next: Page) {
+        setPage(next);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function addProduct(product: Product) {
+        notify(`${product.name} added to your cart`);
+    }
+
+    return (
+        <div className="oi-site">
+            <a className="oi-skip-link" href="#main-content">
+                Skip to content
+            </a>
+
+            <SiteHeader
+                currentPage={page}
+                onNavigate={navigate}
+                onSearch={(value) => {
+                    navigate("marketplace");
+                    if (value) notify(`Showing results for “${value}”`);
+                }}
+            />
+
+            <main id="main-content" className="oi-main">
+                {page === "home" && <HomeView onNavigate={navigate} onAdd={addProduct} />}
+                {page === "marketplace" && <MarketplaceView onAdd={addProduct} />}
+                {page === "seller" && <SellerDashboard />}
+                {page === "about" && <AboutView onNavigate={navigate} />}
+            </main>
+
+            <SiteFooter onNavigate={navigate} />
+        </div>
+    );
 }

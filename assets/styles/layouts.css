@@ -1,0 +1,399 @@
+/* ==========================================================================
+   Oilinga Design System — Layouts
+   Site shell, header, navigation, footer, page scaffolding.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Site shell
+   -------------------------------------------------------------------------- */
+
+.oi-site {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.oi-main {
+    flex: 1;
+    width: 100%;
+}
+
+.oi-view {
+    padding-block: var(--space-7) var(--space-16);
+    animation: oi-view-in var(--duration-slow) var(--ease-out) both;
+}
+
+@keyframes oi-view-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Logo
+   -------------------------------------------------------------------------- */
+
+.oi-logo {
+    display: inline-block;
+    flex: none;
+    line-height: 0;
+}
+
+.oi-logo img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.oi-logo--sm {
+    width: 110px;
+}
+
+.oi-logo--md {
+    width: 144px;
+}
+
+.oi-logo--lg {
+    width: 170px;
+}
+
+.oi-logo--light img {
+    filter: brightness(0) invert(1);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.oi-site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.oi-site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(18px, 3.2vw, 45px);
+    min-height: var(--header-height);
+}
+
+.oi-brand {
+    display: block;
+    flex: none;
+}
+
+.oi-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: none;
+}
+
+.oi-menu-toggle {
+    display: none;
+    place-items: center;
+    width: 39px;
+    height: 39px;
+    margin-left: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface-raised);
+    color: var(--color-primary);
+}
+
+.oi-menu-toggle:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+/* --------------------------------------------------------------------------
+   Primary navigation
+   -------------------------------------------------------------------------- */
+
+.oi-nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex: 1;
+}
+
+.oi-nav__link {
+    position: relative;
+    padding: 32px 0;
+    color: var(--neutral-700);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    transition: color var(--duration-base) var(--ease-out);
+}
+
+.oi-nav__link:hover {
+    color: var(--color-primary);
+}
+
+.oi-nav__link[aria-current="page"] {
+    color: var(--color-primary);
+}
+
+.oi-nav__link[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 19px;
+    left: 0;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--color-accent);
+}
+
+.oi-nav__actions {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+.oi-site-footer {
+    margin-top: auto;
+    background: var(--green-900);
+    color: var(--color-text-inverse);
+}
+
+.oi-footer__main {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding-block: 27px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.oi-footer__brand {
+    width: 145px;
+    flex: none;
+}
+
+.oi-footer__tagline {
+    flex: 1;
+    margin: 0;
+    color: #e9eee8;
+    font-size: var(--text-xs);
+    font-style: italic;
+}
+
+.oi-footer__socials {
+    display: flex;
+    gap: 10px;
+}
+
+.oi-footer__social {
+    display: grid;
+    place-items: center;
+    width: 29px;
+    height: 29px;
+    border-radius: var(--radius-full);
+    background: #ffffff;
+    color: var(--color-primary);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-extrabold);
+    transition: transform var(--duration-base) var(--ease-out);
+}
+
+.oi-footer__social:hover {
+    transform: translateY(-2px);
+}
+
+.oi-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: 16px;
+    color: #d6e0d9;
+    font-size: var(--text-2xs);
+}
+
+.oi-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+}
+
+.oi-footer__links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Page heading
+   -------------------------------------------------------------------------- */
+
+.oi-page-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-bottom: 30px;
+}
+
+.oi-page-heading__title {
+    margin: 7px 0;
+    font-size: var(--text-4xl);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: -0.0375em;
+}
+
+.oi-page-heading__lede {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — desktop compact
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+    .oi-site-header__inner {
+        gap: 24px;
+    }
+
+    .oi-header-actions .oi-search {
+        width: 165px;
+    }
+
+    .oi-view {
+        padding-block: var(--space-6) var(--space-14);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — navigation collapse
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+    :root {
+        --header-height: 66px;
+    }
+
+    .oi-site-header__inner {
+        gap: 13px;
+    }
+
+    .oi-nav {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        max-height: calc(100dvh - var(--header-height));
+        padding: 12px var(--container-gutter) 20px;
+        overflow-y: auto;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .oi-nav.is-open {
+        display: flex;
+    }
+
+    .oi-nav__link {
+        padding: 13px;
+        border-radius: var(--radius-sm);
+        font-size: var(--text-base);
+    }
+
+    .oi-nav__link[aria-current="page"] {
+        background: var(--green-50);
+    }
+
+    .oi-nav__link[aria-current="page"]::after {
+        display: none;
+    }
+
+    .oi-nav__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 16px;
+        border-top: 1px solid var(--color-border);
+    }
+
+    .oi-nav__actions .oi-search {
+        flex: 1 1 100%;
+        width: auto;
+    }
+
+    .oi-header-actions {
+        display: none;
+    }
+
+    .oi-menu-toggle {
+        display: inline-grid;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — small screens
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+    .oi-logo--md {
+        width: 118px;
+    }
+
+    .oi-view {
+        padding-block: 15px 42px;
+    }
+
+    .oi-footer__main {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .oi-footer__brand {
+        width: 110px;
+    }
+
+    .oi-footer__tagline {
+        min-width: 60%;
+        font-size: var(--text-2xs);
+    }
+
+    .oi-footer__socials {
+        margin-left: auto;
+    }
+
+    .oi-footer__bottom {
+        flex-direction: column;
+        gap: 10px;
+        font-size: 0.5rem;
+    }
+
+    .oi-page-heading {
+        display: block;
+        margin-bottom: var(--space-5);
+    }
+
+    .oi-page-heading__title {
+        font-size: 2.125rem;
+    }
+
+    .oi-page-heading__lede {
+        font-size: var(--text-xs);
+    }
+}
