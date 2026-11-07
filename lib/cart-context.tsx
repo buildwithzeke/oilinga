@@ -23,6 +23,7 @@ interface CartContextValue {
     addItem: (product: Product) => void;
     removeItem: (slug: string) => void;
     clearCart: () => void;
+    updateQty: (slug: string, qty: number) => void;
 }
 
 const CART_KEY = "oilinga.cart";
@@ -83,14 +84,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setItems([]);
     }, []);
 
+    const updateQty = useCallback((slug: string, qty: number) => {
+        if (qty <= 0) {
+            setItems((prev) => prev.filter((item) => item.product.slug !== slug));
+        } else {
+            setItems((prev) =>
+                prev.map((item) =>
+                    item.product.slug === slug ? { ...item, quantity: qty } : item,
+                ),
+            );
+        }
+    }, []);
+
     const totalCount = useMemo(
         () => items.reduce((sum, item) => sum + item.quantity, 0),
         [items],
     );
 
     const value = useMemo(
-        () => ({ items, totalCount, addItem, removeItem, clearCart }),
-        [items, totalCount, addItem, removeItem, clearCart],
+        () => ({ items, totalCount, addItem, removeItem, clearCart, updateQty }),
+        [items, totalCount, addItem, removeItem, clearCart, updateQty],
     );
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

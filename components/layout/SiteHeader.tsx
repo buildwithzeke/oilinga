@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { Logo } from "@/components/brand/Logo";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useCart } from "@/lib/cart-context";
 import { IconButton } from "@/components/ui/Button";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
-import { useToast } from "@/components/ui/Toast";
 import { RouteSearch } from "@/components/marketplace/RouteSearch";
 
 const navigation = [
@@ -23,8 +23,8 @@ const navigation = [
 export function SiteHeader() {
     const pathname = usePathname();
     const { user, ready } = useAuth();
+    const { totalCount } = useCart();
     const [menuOpen, setMenuOpen] = useState(false);
-    const notify = useToast();
 
     useEffect(() => {
         setMenuOpen(false);
@@ -46,13 +46,20 @@ export function SiteHeader() {
         return pathname === href || pathname.startsWith(`${href}/`);
     }
 
-    function wishlist() {
-        notify(
-            user
-                ? "Saved products are coming soon"
-                : "Sign in to save your wishlist",
-        );
-    }
+    const cartBtn = (
+        <Link
+            href="/cart"
+            className="oi-cart-btn"
+            aria-label={`Cart, ${totalCount} item${totalCount !== 1 ? "s" : ""}`}
+        >
+            <Icon name="bag" size={18} />
+            {totalCount > 0 && (
+                <span className="oi-cart-badge" aria-hidden="true">
+                    {totalCount}
+                </span>
+            )}
+        </Link>
+    );
 
     const searchField = (
         <RouteSearch
@@ -112,18 +119,24 @@ export function SiteHeader() {
 
                     <div className="oi-nav__actions">
                         {searchField}
-                        <IconButton label="Wishlist" onClick={wishlist}>
-                            <Icon name="heart" size={18} />
-                        </IconButton>
+                        {cartBtn}
+                        <Link href="/wishlist" aria-label="Wishlist">
+                            <IconButton label="Wishlist" onClick={() => { }}>
+                                <Icon name="heart" size={18} />
+                            </IconButton>
+                        </Link>
                         {accountActions}
                     </div>
                 </nav>
 
                 <div className="oi-header-actions">
                     {searchField}
-                    <IconButton label="Wishlist" onClick={wishlist}>
-                        <Icon name="heart" size={18} />
-                    </IconButton>
+                    {cartBtn}
+                    <Link href="/wishlist" aria-label="Wishlist">
+                        <IconButton label="Wishlist" onClick={() => { }}>
+                            <Icon name="heart" size={18} />
+                        </IconButton>
+                    </Link>
                     {accountActions}
                 </div>
 

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { CartProvider } from "@/lib/cart-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
@@ -89,7 +90,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <body>
                 <ToastProvider>
                     <AuthProvider>
-                        <CartProvider>{children}</CartProvider>
+                        <WishlistProvider>
+                            <CartProvider>{children}</CartProvider>
+                        </WishlistProvider>
                     </AuthProvider>
                 </ToastProvider>
             </body>
