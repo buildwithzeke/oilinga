@@ -6,7 +6,10 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { SearchField } from "@/components/ui/SearchField";
 import { CategoryGrid } from "@/components/marketplace/CategoryGrid";
 import { ProductGrid } from "@/components/marketplace/ProductCard";
-import { categories, products } from "@/lib/data";
+import { ShopGrid } from "@/components/marketplace/ShopCard";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { StarRating } from "@/components/ui/StarRating";
+import { categories, featuredShops, products } from "@/lib/data";
 
 export const metadata: Metadata = {
     title: "Design system",
@@ -64,6 +67,18 @@ const iconNames: IconName[] = [
     "check",
     "arrow-right",
     "chevron-down",
+    "chevron-right",
+    "star",
+    "pin",
+    "eye",
+    "eye-off",
+    "mail",
+    "lock",
+    "calendar",
+    "filter",
+    "package",
+    "arrow-left",
+    "logout",
 ];
 
 function ColourSwatches({
@@ -98,7 +113,7 @@ export default function DesignSystemPage() {
                     <a href="/" aria-label="Back to the Oilinga home page">
                         <Logo size="sm" />
                     </a>
-                    <Badge tone="green">Phase 1 · Brand foundation</Badge>
+                    <Badge tone="green">Phase 2 · Public website</Badge>
                 </div>
             </header>
 
@@ -259,19 +274,48 @@ export default function DesignSystemPage() {
                 <section className="oi-ds__section">
                     <div className="oi-ds__section-head">
                         <span className="oi-eyebrow oi-eyebrow--green">06 · Components</span>
-                        <h2>Cards and product tiles</h2>
+                        <h2>Cards, products and shops</h2>
                         <p>
-                            Product and category cards carry the full interactive treatment:
-                            hover lift, card shadow and a visible focus ring.
+                            Product, category and shop cards share the same hover lift, shadow
+                            and focus treatment. Every product card links to its product page and
+                            its producer&apos;s storefront.
                         </p>
                     </div>
                     <CategoryGrid categories={categories} />
-                    <ProductGrid products={products} compact />
+                    <ProductGrid products={products.slice(0, 3)} compact />
+                    <ShopGrid shops={featuredShops.slice(0, 3)} />
                 </section>
 
                 <section className="oi-ds__section">
                     <div className="oi-ds__section-head">
-                        <span className="oi-eyebrow oi-eyebrow--green">07 · Icons</span>
+                        <span className="oi-eyebrow oi-eyebrow--green">07 · Discovery</span>
+                        <h2>Breadcrumbs, ratings and filters</h2>
+                        <p>
+                            Marketplace discovery uses URL search parameters, so filters and
+                            sorting are linkable and survive a page refresh.
+                        </p>
+                    </div>
+                    <Breadcrumbs
+                        items={[
+                            { label: "Home", href: "/" },
+                            { label: "Marketplace", href: "/marketplace" },
+                            { label: "Premium Red Palm Oil" },
+                        ]}
+                    />
+                    <div className="oi-ds__row">
+                        <StarRating rating={4.9} reviews={128} />
+                        <StarRating rating={4.6} />
+                        <span className="oi-chip" aria-current="true">
+                            Crude palm oil
+                        </span>
+                        <span className="oi-chip">Groundnut oil</span>
+                        <span className="oi-chip">Wholesale</span>
+                    </div>
+                </section>
+
+                <section className="oi-ds__section">
+                    <div className="oi-ds__section-head">
+                        <span className="oi-eyebrow oi-eyebrow--green">08 · Icons</span>
                         <h2>Icon set</h2>
                         <p>
                             A single inline SVG set keeps icons crisp, themeable and available
@@ -289,7 +333,7 @@ export default function DesignSystemPage() {
 
                 <section className="oi-ds__section">
                     <div className="oi-ds__section-head">
-                        <span className="oi-eyebrow oi-eyebrow--green">08 · Space</span>
+                        <span className="oi-eyebrow oi-eyebrow--green">09 · Space</span>
                         <h2>Radius and spacing</h2>
                         <p>
                             A 4px spacing scale and a five-step radius scale keep rhythm

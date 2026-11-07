@@ -1,6 +1,7 @@
 # Oilinga Design System
 
-Phase 1 · Brand and design foundation.
+Phase 2 · Public website: homepage, marketplace, shop directory and storefronts,
+product discovery, and authentication.
 
 The design system is a small, token-driven CSS layer plus a typed React component
 library. Pages are composed from components, and components consume semantic
@@ -27,13 +28,29 @@ app/globals.css   Import order for the layers above
 components/
   brand/Logo.tsx
   layout/SiteHeader.tsx, SiteFooter.tsx
-  ui/Icon.tsx, Button.tsx, Badge.tsx, SearchField.tsx, Section.tsx, Toast.tsx
-  marketplace/ProductCard.tsx, CategoryGrid.tsx, TrustRow.tsx, SellerBanner.tsx
-  views/HomeView.tsx, MarketplaceView.tsx, AboutView.tsx, SellerDashboard.tsx
+  auth/AuthProvider.tsx, AuthForm.tsx, AccountView.tsx
+  ui/Icon.tsx, Button.tsx, ButtonLink.tsx, Badge.tsx, SearchField.tsx,
+    Section.tsx, Toast.tsx, StarRating.tsx, Breadcrumbs.tsx
+  marketplace/ProductCard.tsx, CategoryGrid.tsx, ShopCard.tsx, TrustRow.tsx,
+    SellerBanner.tsx, RouteSearch.tsx, QuerySelect.tsx, AddToCart.tsx
+  views/HomeView.tsx, AboutView.tsx, SellerDashboard.tsx
 
 lib/
-  cn.ts           Tiny className joiner
-  data.ts         Mock domain data and shared types
+  cn.ts                 Tiny className joiner
+  data.ts               Mock domain data, discovery helpers and shared types
+  search-params.ts      URL query helpers for marketplace and shop filters
+
+app/
+  (site)/               Public site shell: header, main, footer
+    page.tsx            Homepage
+    marketplace/        Marketplace with q, category, price, verified and sort
+    shops/              Shop directory + /shops/[slug] storefronts
+    products/[slug]/    Product detail pages
+    login/, signup/     Authentication
+    account/            Protected account view
+    seller/, about/     Seller portal preview and About
+  design-system/        Living style reference
+  not-found.tsx         Custom 404
 ```
 
 All component classes are prefixed `oi-` and all CSS custom properties are namespaced
@@ -123,19 +140,28 @@ tokens are available for one-off compositions.
 | Component      | Import                                        | Notes |
 | -------------- | --------------------------------------------- | ----- |
 | `Button`       | `@/components/ui/Button`                      | `primary`, `gold`, `danger`, `outline`, `ghost`, `glass`; `sm`/`md`/`lg`; `block` |
+| `ButtonLink`   | `@/components/ui/ButtonLink`                  | Same variants and sizes, rendered as a Next `Link` |
 | `IconButton`   | `@/components/ui/Button`                      | Requires an accessible `label` |
 | `Badge`        | `@/components/ui/Badge`                        | `gold`, `green`, `neutral`, `red`, `blue`, `pending`, `shipped`, `delivered` |
+| `StarRating`   | `@/components/ui/StarRating`                  | Rating + optional review count with an accessible label |
+| `Breadcrumbs`  | `@/components/ui/Breadcrumbs`                 | Home / section / page trail with `aria-current` |
 | `SearchField`  | `@/components/ui/SearchField`                 | `sm` (header) and `lg` (marketplace) sizes |
+| `RouteSearch`  | `@/components/marketplace/RouteSearch`        | Search form that pushes a URL query and keeps filters |
+| `QuerySelect`  | `@/components/marketplace/QuerySelect`        | Sort/filter select that updates the URL query |
 | `Section`      | `@/components/ui/Section`                     | Optional eyebrow, title and action |
 | `Icon`         | `@/components/ui/Icon`                        | Inline SVG registry; inherits `currentColor` |
 | `ToastProvider`/`useToast` | `@/components/ui/Toast`         | Single polite live-region toast |
 | `Logo`         | `@/components/brand/Logo`                     | `sm`/`md`/`lg`; `default`/`light` |
-| `SiteHeader`   | `@/components/layout/SiteHeader`              | Sticky, responsive nav, keyboard-dismissible mobile menu |
-| `SiteFooter`   | `@/components/layout/SiteFooter`              | Dark green brand surface |
-| `ProductCard`/`ProductGrid` | `@/components/marketplace/ProductCard` | Product tile + responsive grid |
-| `CategoryGrid` | `@/components/marketplace/CategoryGrid`       | Five-category responsive grid |
+| `SiteHeader`   | `@/components/layout/SiteHeader`              | Route-aware nav, search, auth state, keyboard-dismissible mobile menu |
+| `SiteFooter`   | `@/components/layout/SiteFooter`              | Dark green brand surface with route links |
+| `ProductCard`/`ProductGrid` | `@/components/marketplace/ProductCard` | Linked product tile, rating, add-to-cart toast |
+| `ShopCard`/`ShopGrid` | `@/components/marketplace/ShopCard`    | Storefront card with verified badge, location, rating |
+| `CategoryGrid` | `@/components/marketplace/CategoryGrid`       | Five category links into the marketplace |
 | `TrustRow`     | `@/components/marketplace/TrustRow`           | Four trust signals |
 | `SellerBanner` | `@/components/marketplace/SellerBanner`       | Seller call-to-action |
+| `AuthProvider`/`useAuth` | `@/components/auth/AuthProvider`     | Demo session state, sign-in/sign-up/sign-out |
+| `AuthForm`     | `@/components/auth/AuthForm`                  | Login/sign-up form with validation and demo fill |
+| `AccountView`  | `@/components/auth/AccountView`               | Protected account page and sign-out |
 | Views          | `@/components/views/*`                        | Composed page sections |
 
 ### Example
@@ -187,13 +213,18 @@ are referenced by `app/layout.tsx` metadata and `app/manifest.ts`.
 `SiteHeader` is sticky at `--z-sticky` and collapses at **900px**. Below that
 breakpoint the primary navigation becomes a dropdown panel, the header actions
 move into the panel, and a menu toggle (`aria-expanded` + `aria-controls`) is
-shown. `Escape` closes the panel and every link closes it on navigation.
+shown. `Escape` closes the panel, and the panel closes on pathname changes.
 
-The page shell is:
+Navigation is route-based: Home, Marketplace, Shops, For Sellers and About. The
+active item is derived from `usePathname()`, so nested routes such as
+`/shops/palm-harvest-foods` keep the Shops item highlighted. Signed-in users see
+an account chip in place of Log in / Sign up.
+
+The page shell lives in `app/(site)/layout.tsx`:
 
 ```
 SiteHeader
-main#main-content   ← <View /> composed from sections
+main#main-content   ← route page composed from components
 SiteFooter
 ```
 
@@ -202,16 +233,62 @@ navigation.
 
 ---
 
-## 8. Responsive strategy
+## 8. Public routes and discovery
+
+| Route | Purpose |
+| ----- | ------- |
+| `/` | Homepage: hero search, popular searches, categories, featured shops, featured products, seller CTA |
+| `/marketplace` | Product discovery with `q`, `category`, `min`, `max`, `verified` and `sort` query parameters |
+| `/shops` | Shop directory with search and category chips |
+| `/shops/[slug]` | Storefront: producer profile, stats, products and other shops |
+| `/products/[slug]` | Product detail: price, facts, add-to-cart, producer and related products |
+| `/login`, `/signup` | Authentication forms |
+| `/account` | Protected account page |
+| `/seller` | Seller portal preview |
+| `/about` | About Oilinga |
+| `/design-system` | Living reference for tokens and components |
+
+Discovery is URL-driven. Every filter is a link or a GET form, so results are
+shareable, crawlable and survive refresh. Sorting uses a small client select
+that pushes an updated query string. Empty results show a reset action.
+
+Product cards link to both the product page and the producer's storefront. Shop
+cards link to the storefront and show verified status, location, rating and
+product count.
+
+---
+
+## 9. Authentication (Phase 2 demo)
+
+Authentication is currently a browser-persisted demo with a clean seam for a
+real provider:
+
+- `AuthProvider` stores accounts in `localStorage` under `oilinga.accounts`
+  and the active session under `oilinga.session`.
+- A non-sensitive `oilinga_session=1` cookie mirrors the session for future
+  server-side checks.
+- Demo account: `demo@oilinga.com` / `oilinga` (Amina Okafor).
+- Sign-up creates a local account; passwords are demo-only and never sent to a
+  server.
+- `/account` redirects to `/login?next=/account` when signed out.
+- Sign-out clears the session and returns home.
+
+Replace the provider internals with a real identity service in a later phase;
+the `useAuth()` surface (`user`, `ready`, `signIn`, `signUp`, `signOut`) can stay
+the same.
+
+---
+
+## 10. Responsive strategy
 
 Mobile-first CSS with content-driven breakpoints:
 
 | Breakpoint | Behaviour |
 | ---------- | --------- |
 | `≤ 1024px` | Compact desktop: tighter gutters, 2-up metrics, narrower hero copy |
-| `≤ 900px`  | Navigation collapses; seller dashboard becomes single-column with a horizontal sidebar; categories go 3-up |
-| `≤ 760px`  | Mobile: hero stacks photo above copy, trust row 2×2, products 2-up, filters become a collapsible `<details>`-style panel, about image moves below copy |
-| `≤ 480px`  | Products and category grid go single/2-up; hero actions wrap |
+| `≤ 900px`  | Navigation collapses; seller dashboard becomes single-column with a horizontal sidebar; categories go 3-up; shop grid 2-up |
+| `≤ 760px`  | Mobile: hero stacks photo above copy, trust row 2×2, products 2-up, marketplace filters stack above results, auth aside hides, account and storefront grids stack |
+| `≤ 480px`  | Products and category grid go single/2-up; shop grid single; hero actions wrap |
 
 The only breakpoint that changes navigation structure is **900px**; keep new
 components aligned with this table rather than inventing new widths.

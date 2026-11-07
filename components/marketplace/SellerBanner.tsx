@@ -1,14 +1,7 @@
-"use client";
-
-import type { Page } from "@/lib/data";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
 
-export interface SellerBannerProps {
-    onNavigate: (page: Page) => void;
-}
-
-export function SellerBanner({ onNavigate }: SellerBannerProps) {
+export function SellerBanner() {
     return (
         <section className="oi-seller-banner">
             <div>
@@ -22,14 +15,14 @@ export function SellerBanner({ onNavigate }: SellerBannerProps) {
                     Reach new buyers, manage your orders and grow with a community that values
                     local producers.
                 </p>
-                <Button variant="gold" onClick={() => onNavigate("seller")}>
+                <ButtonLink href="/seller" variant="gold">
                     Open your shop
                     <Icon name="arrow-right" size={16} />
-                </Button>
+                </ButtonLink>
             </div>
-            <div className="oi-seller-banner__mark" aria-hidden="true">
-                🌴
-            </div>
+            <span className="oi-seller-banner__mark" aria-hidden="true">
+                ⌁
+            </span>
         </section>
     );
 }

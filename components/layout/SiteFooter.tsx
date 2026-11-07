@@ -1,13 +1,18 @@
-import type { Page } from "@/lib/data";
+import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 
-export interface SiteFooterProps {
-    onNavigate?: (page: Page) => void;
-}
+const links = [
+    { href: "/marketplace", label: "Marketplace" },
+    { href: "/shops", label: "Shops" },
+    { href: "/seller", label: "Seller portal" },
+    { href: "/about", label: "About" },
+    { href: "/account", label: "Account" },
+    { href: "/design-system", label: "Design system" },
+];
 
-export function SiteFooter({ onNavigate }: SiteFooterProps) {
+export function SiteFooter() {
     return (
-        <footer className="oi-site-footer" id="footer">
+        <footer className="oi-site-footer">
             <div className="oi-container oi-footer__main">
                 <div className="oi-footer__brand">
                     <Logo variant="light" alt="Oilinga" />
@@ -16,13 +21,13 @@ export function SiteFooter({ onNavigate }: SiteFooterProps) {
                     Building a thriving agricultural marketplace in Africa.
                 </p>
                 <div className="oi-footer__socials">
-                    <a className="oi-footer__social" href="#footer" aria-label="Oilinga on Facebook">
+                    <a className="oi-footer__social" href="https://facebook.com" aria-label="Oilinga on Facebook">
                         f
                     </a>
-                    <a className="oi-footer__social" href="#footer" aria-label="Oilinga on Instagram">
+                    <a className="oi-footer__social" href="https://instagram.com" aria-label="Oilinga on Instagram">
                         ◎
                     </a>
-                    <a className="oi-footer__social" href="#footer" aria-label="Oilinga on LinkedIn">
+                    <a className="oi-footer__social" href="https://linkedin.com" aria-label="Oilinga on LinkedIn">
                         in
                     </a>
                 </div>
@@ -31,20 +36,11 @@ export function SiteFooter({ onNavigate }: SiteFooterProps) {
             <div className="oi-container oi-footer__bottom">
                 <span>© 2026 Oilinga. Buy · Sell · Grow.</span>
                 <nav className="oi-footer__links" aria-label="Footer">
-                    <a
-                        href="#about"
-                        onClick={(event) => {
-                            if (!onNavigate) return;
-                            event.preventDefault();
-                            onNavigate("about");
-                        }}
-                    >
-                        About
-                    </a>
-                    <a href="#footer">Help centre</a>
-                    <a href="#footer">Privacy</a>
-                    <a href="#footer">Terms</a>
-                    <a href="/design-system">Design system</a>
+                    {links.map((link) => (
+                        <Link key={link.href} href={link.href}>
+                            {link.label}
+                        </Link>
+                    ))}
                 </nav>
             </div>
         </footer>

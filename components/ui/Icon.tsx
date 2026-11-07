@@ -25,7 +25,19 @@ export type IconName =
     | "settings"
     | "sun"
     | "chevron-down"
-    | "user";
+    | "chevron-right"
+    | "user"
+    | "star"
+    | "pin"
+    | "eye"
+    | "eye-off"
+    | "logout"
+    | "arrow-left"
+    | "mail"
+    | "lock"
+    | "calendar"
+    | "filter"
+    | "package";
 
 const glyphs: Record<IconName, ReactNode> = {
     search: (
@@ -133,10 +145,69 @@ const glyphs: Record<IconName, ReactNode> = {
         </>
     ),
     "chevron-down": <path d="m6 9 6 6 6-6" />,
+    "chevron-right": <path d="m9 6 6 6-6 6" />,
     user: (
         <>
             <circle cx="12" cy="8" r="4" />
             <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+        </>
+    ),
+    star: (
+        <path
+            d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z"
+            fill="currentColor"
+            stroke="none"
+        />
+    ),
+    pin: (
+        <>
+            <path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z" />
+            <circle cx="12" cy="9" r="2.4" />
+        </>
+    ),
+    eye: (
+        <>
+            <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+            <circle cx="12" cy="12" r="3" />
+        </>
+    ),
+    "eye-off": (
+        <>
+            <path d="M4 4l16 16" />
+            <path d="M9.9 5.9A9.8 9.8 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-2.4 3.2M6.2 7.8A17 17 0 0 0 2.5 12S6 18.5 12 18.5c1.4 0 2.7-.4 3.8-1" />
+            <path d="M10 10a2.8 2.8 0 0 0 4 4" />
+        </>
+    ),
+    logout: (
+        <>
+            <path d="M9 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4" />
+            <path d="M16 8l4 4-4 4M20 12H9" />
+        </>
+    ),
+    "arrow-left": <path d="M19 12H5M11 6l-6 6 6 6" />,
+    mail: (
+        <>
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m3 7 9 6 9-6" />
+        </>
+    ),
+    lock: (
+        <>
+            <rect x="4" y="10" width="16" height="11" rx="2" />
+            <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+        </>
+    ),
+    calendar: (
+        <>
+            <rect x="3" y="5" width="18" height="16" rx="2" />
+            <path d="M8 3v4M16 3v4M3 10h18" />
+        </>
+    ),
+    filter: <path d="M3 5h18l-7 8v6l-4-2v-4L3 5Z" />,
+    package: (
+        <>
+            <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
+            <path d="m3 8 9 5 9-5M12 13v8" />
         </>
     ),
 };

@@ -181,7 +181,7 @@ export function SellerDashboard() {
                                 </button>
                             </div>
                             {topProducts.map((product) => (
-                                <div className="oi-top-product" key={product.id}>
+                                <div className="oi-top-product" key={product.slug}>
                                     <span
                                         className={cn(
                                             "oi-top-product__art",

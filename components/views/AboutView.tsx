@@ -1,14 +1,7 @@
-"use client";
-
-import type { Page } from "@/lib/data";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
 
-export interface AboutViewProps {
-    onNavigate: (page: Page) => void;
-}
-
-export function AboutView({ onNavigate }: AboutViewProps) {
+export function AboutView() {
     return (
         <section className="oi-view oi-container" aria-labelledby="about-title">
             <div className="oi-about">
@@ -25,10 +18,10 @@ export function AboutView({ onNavigate }: AboutViewProps) {
                     through a trusted marketplace. We make it easier for local businesses to reach
                     new buyers and simpler for everyone to find quality oils.
                 </p>
-                <Button variant="primary" onClick={() => onNavigate("marketplace")}>
+                <ButtonLink href="/marketplace" variant="primary">
                     Explore Oilinga
                     <Icon name="arrow-right" size={16} />
-                </Button>
+                </ButtonLink>
                 <img
                     className="oi-about__image"
                     src="/assets/brand/oilinga-brand-visual-reference.png"
