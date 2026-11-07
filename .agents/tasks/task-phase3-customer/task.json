@@ -1,0 +1,7 @@
+{
+  "task_id": "task-phase3-customer",
+  "task_description": "Build Phase 3 of the Oilinga platform: Customer Experience — customer dashboard, cart, checkout, orders & tracking, wishlist, and reviews.",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}

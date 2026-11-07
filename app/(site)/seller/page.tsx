@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { SellerDashboard } from "@/components/views/SellerDashboard";
+import { SellerSetup } from "@/components/views/SellerSetup";
 
 export const metadata: Metadata = {
-    title: "Seller portal",
-    description:
-        "Preview the Oilinga seller portal: sales, orders, inventory and storefront tools in one place.",
+    title: "Sell on Oilinga",
+    description: "Learn how to open an Oilinga shop, list your products and publish your storefront.",
 };
 
 export default function SellerPage() {
-    return <SellerDashboard />;
+    return <SellerSetup />;
 }

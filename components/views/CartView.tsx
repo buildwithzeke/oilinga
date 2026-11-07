@@ -57,7 +57,7 @@ export function CartView() {
                             <span
                                 className={cn(
                                     "oi-cart-item__art",
-                                    `oi-top-product__art--${product.art}`,
+                                    `oi-cart-item__art--${product.art}`,
                                 )}
                                 aria-hidden="true"
                             >
