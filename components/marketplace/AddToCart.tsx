@@ -1,9 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
+import { cn } from "@/lib/cn";
 import type { Product } from "@/lib/data";
 
 export interface AddToCartProps {
@@ -12,12 +13,19 @@ export interface AddToCartProps {
 
 export function AddToCart({ product }: AddToCartProps) {
     const notify = useToast();
-    const router = useRouter();
     const { addItem } = useCart();
+    const { isInWishlist, toggleWishlist } = useWishlist();
+
+    const wished = isInWishlist(product.slug);
 
     function handleAddToCart() {
         addItem(product);
         notify(`${product.name} added to your cart`);
+    }
+
+    function handleToggleWishlist() {
+        toggleWishlist(product);
+        notify(wished ? "Removed from wishlist" : "Added to wishlist");
     }
 
     return (
@@ -32,11 +40,12 @@ export function AddToCart({ product }: AddToCartProps) {
             </button>
             <button
                 type="button"
-                className="oi-btn oi-btn--outline oi-btn--lg"
-                onClick={() => router.push("/login?next=/account")}
+                className={cn("oi-btn oi-btn--outline oi-btn--lg", wished && "is-active")}
+                onClick={handleToggleWishlist}
+                aria-pressed={wished}
             >
                 <Icon name="heart" size={17} />
-                Save for later
+                {wished ? "Saved ♡" : "Save for later"}
             </button>
         </div>
     );

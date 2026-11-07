@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { StarRating } from "@/components/ui/StarRating";
 import { useToast } from "@/components/ui/Toast";
+import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 
 export interface ProductCardProps {
     product: Product;
@@ -14,6 +16,10 @@ export interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
     const notify = useToast();
+    const { addItem } = useCart();
+    const { isInWishlist, toggleWishlist } = useWishlist();
+
+    const wished = isInWishlist(product.slug);
 
     return (
         <article className="oi-product-card">
@@ -32,6 +38,22 @@ export function ProductCard({ product }: ProductCardProps) {
                 <span className="oi-product-card__glyph" aria-hidden="true">
                     {product.glyph}
                 </span>
+                <button
+                    type="button"
+                    className={cn("oi-product-card__wish", wished && "is-active")}
+                    aria-label={
+                        wished
+                            ? `Remove ${product.name} from wishlist`
+                            : `Add ${product.name} to wishlist`
+                    }
+                    onClick={(e) => {
+                        e.preventDefault();
+                        toggleWishlist(product);
+                        notify(wished ? "Removed from wishlist" : "Added to wishlist");
+                    }}
+                >
+                    <Icon name="heart" size={14} />
+                </button>
             </Link>
             <div className="oi-product-card__body">
                 <Link
@@ -55,7 +77,10 @@ export function ProductCard({ product }: ProductCardProps) {
                     <button
                         type="button"
                         className="oi-add-btn"
-                        onClick={() => notify(`${product.name} added to your cart`)}
+                        onClick={() => {
+                            addItem(product);
+                            notify(`${product.name} added to your cart`);
+                        }}
                         aria-label={`Add ${product.name} to cart`}
                     >
                         <Icon name="plus" size={18} />
