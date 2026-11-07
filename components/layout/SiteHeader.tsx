@@ -1,30 +1,34 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { Page } from "@/lib/data";
 import { cn } from "@/lib/cn";
 import { Logo } from "@/components/brand/Logo";
-import { Button, IconButton } from "@/components/ui/Button";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { IconButton } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
-import { SearchField } from "@/components/ui/SearchField";
 import { useToast } from "@/components/ui/Toast";
+import { RouteSearch } from "@/components/marketplace/RouteSearch";
 
-const navigation: Array<{ id: Page; label: string }> = [
-    { id: "home", label: "Home" },
-    { id: "marketplace", label: "Marketplace" },
-    { id: "seller", label: "For Sellers" },
-    { id: "about", label: "About" },
+const navigation = [
+    { href: "/", label: "Home" },
+    { href: "/marketplace", label: "Marketplace" },
+    { href: "/shops", label: "Shops" },
+    { href: "/seller", label: "For Sellers" },
+    { href: "/about", label: "About" },
 ];
 
-export interface SiteHeaderProps {
-    currentPage: Page;
-    onNavigate: (page: Page) => void;
-    onSearch?: (value: string) => void;
-}
-
-export function SiteHeader({ currentPage, onNavigate, onSearch }: SiteHeaderProps) {
+export function SiteHeader() {
+    const pathname = usePathname();
+    const { user, ready } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
     const notify = useToast();
+
+    useEffect(() => {
+        setMenuOpen(false);
+    }, [pathname]);
 
     useEffect(() => {
         if (!menuOpen) return;
@@ -37,61 +41,57 @@ export function SiteHeader({ currentPage, onNavigate, onSearch }: SiteHeaderProp
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [menuOpen]);
 
-    function navigate(page: Page) {
-        setMenuOpen(false);
-        onNavigate(page);
+    function isActive(href: string) {
+        if (href === "/") return pathname === "/";
+        return pathname === href || pathname.startsWith(`${href}/`);
     }
 
-    function search(value: string) {
-        setMenuOpen(false);
-        if (onSearch) {
-            onSearch(value);
-            return;
-        }
-        onNavigate("marketplace");
+    function wishlist() {
+        notify(
+            user
+                ? "Saved products are coming soon"
+                : "Sign in to save your wishlist",
+        );
     }
 
     const searchField = (
-        <SearchField
+        <RouteSearch
+            basePath="/marketplace"
             placeholder="Search oils…"
             label="Search products"
-            onSubmit={search}
         />
     );
 
-    const accountActions = (
+    const accountActions = !ready ? null : user ? (
+        <Link
+            href="/account"
+            className="oi-header-account"
+            aria-label={`Your account, ${user.name}`}
+        >
+            <span className="oi-header-account__avatar" aria-hidden="true">
+                {user.initials}
+            </span>
+            <span className="oi-header-account__name">
+                {user.name.split(/\s+/)[0]}
+            </span>
+        </Link>
+    ) : (
         <>
-            <Button
-                variant="outline"
-                size="sm"
-                onClick={() => notify("Account access is coming soon")}
-            >
+            <ButtonLink href="/auth/login" variant="outline" size="sm">
                 Log in
-            </Button>
-            <Button
-                variant="danger"
-                size="sm"
-                onClick={() => notify("Account access is coming soon")}
-            >
+            </ButtonLink>
+            <ButtonLink href="/auth/signup" variant="danger" size="sm">
                 Sign up
-            </Button>
+            </ButtonLink>
         </>
     );
 
     return (
         <header className="oi-site-header">
             <div className="oi-container oi-site-header__inner">
-                <a
-                    className="oi-brand"
-                    href="#home"
-                    aria-label="Oilinga home"
-                    onClick={(event) => {
-                        event.preventDefault();
-                        navigate("home");
-                    }}
-                >
+                <Link className="oi-brand" href="/" aria-label="Oilinga home">
                     <Logo />
-                </a>
+                </Link>
 
                 <nav
                     id="primary-navigation"
@@ -99,26 +99,20 @@ export function SiteHeader({ currentPage, onNavigate, onSearch }: SiteHeaderProp
                     aria-label="Primary"
                 >
                     {navigation.map((item) => (
-                        <a
-                            key={item.id}
+                        <Link
+                            key={item.href}
                             className="oi-nav__link"
-                            href={`#${item.id}`}
-                            aria-current={currentPage === item.id ? "page" : undefined}
-                            onClick={(event) => {
-                                event.preventDefault();
-                                navigate(item.id);
-                            }}
+                            href={item.href}
+                            aria-current={isActive(item.href) ? "page" : undefined}
+                            onClick={() => setMenuOpen(false)}
                         >
                             {item.label}
-                        </a>
+                        </Link>
                     ))}
 
                     <div className="oi-nav__actions">
                         {searchField}
-                        <IconButton
-                            label="Wishlist"
-                            onClick={() => notify("Sign in to save your wishlist")}
-                        >
+                        <IconButton label="Wishlist" onClick={wishlist}>
                             <Icon name="heart" size={18} />
                         </IconButton>
                         {accountActions}
@@ -127,10 +121,7 @@ export function SiteHeader({ currentPage, onNavigate, onSearch }: SiteHeaderProp
 
                 <div className="oi-header-actions">
                     {searchField}
-                    <IconButton
-                        label="Wishlist"
-                        onClick={() => notify("Sign in to save your wishlist")}
-                    >
+                    <IconButton label="Wishlist" onClick={wishlist}>
                         <Icon name="heart" size={18} />
                     </IconButton>
                     {accountActions}

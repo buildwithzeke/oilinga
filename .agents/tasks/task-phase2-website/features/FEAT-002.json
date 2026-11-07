@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Add the /auth/login and /auth/signup URL aliases that the Phase 2 spec requires. The real login/signup pages live at app/(site)/login/page.tsx and app/(site)/signup/page.tsx (rendering AuthForm). This FEAT adds app/auth/login/page.tsx and app/auth/signup/page.tsx that simply re-render the same AuthForm component, and updates SiteHeader.tsx to point its Log in / Sign up buttons to /auth/login and /auth/signup. FEAT-002 depends on FEAT-001 being committed first (it imports from lib/types.ts).",
+  "status": "completed",
+  "steps": [
+    "1. Create app/auth/login/page.tsx — a Next.js page that renders AuthForm in login mode. Copy the pattern from app/(site)/login/page.tsx exactly: import AuthForm, read the next searchParam, render <AuthForm mode='login' next={next} />. Add metadata title 'Log in'. The (site) route group layout provides SiteHeader/SiteFooter automatically when a page is inside it; the /auth/ route is outside (site) so it needs its own layout or a standalone shell. Decision: create app/auth/layout.tsx that wraps children with SiteHeader and SiteFooter (same as app/(site)/layout.tsx) so auth pages share the shell without duplicating components.",
+    "2. Create app/auth/signup/page.tsx — same pattern as app/(site)/signup/page.tsx: render <AuthForm mode='signup' next={next} />. Add metadata title 'Create your account'.",
+    "3. Create app/auth/layout.tsx — mirrors app/(site)/layout.tsx exactly: imports SiteHeader and SiteFooter, renders the .oi-site shell with skip link, SiteHeader, <main id='main-content' className='oi-main'>{children}</main>, and SiteFooter.",
+    "4. Update components/layout/SiteHeader.tsx: change the Log in button href from '/login' to '/auth/login' and the Sign up button href from '/signup' to '/auth/signup'. Also update the AuthForm switchHref logic in components/auth/AuthForm.tsx: change the pathname references from '/login' to '/auth/login' and '/signup' to '/auth/signup' so the 'Log in instead' / 'Create an account' toggle links point to the new canonical routes.",
+    "5. Keep the existing app/(site)/login and app/(site)/signup pages in place — they still work and next.js route groups mean they respond at /login and /signup. Do NOT delete them (backward compatibility). The /auth/login and /auth/signup routes are additive aliases."
+  ],
+  "acceptance_criteria": [
+    "app/auth/layout.tsx exists with oi-site shell (SiteHeader + SiteFooter)",
+    "app/auth/login/page.tsx exists and renders AuthForm mode='login'",
+    "app/auth/signup/page.tsx exists and renders AuthForm mode='signup'",
+    "SiteHeader.tsx Log in link points to /auth/login, Sign up link points to /auth/signup",
+    "AuthForm.tsx switch links (Log in instead / Create an account) point to /auth/login and /auth/signup",
+    "The original /login and /signup routes still exist and still build",
+    "yarn build exits 0 with all pages including /auth/login and /auth/signup in the route table"
+  ],
+  "verification": [
+    "cd /Users/mac/Desktop/oilinga && yarn build — must exit 0; the build output route table must include /auth/login and /auth/signup (as ƒ dynamic routes, like /login and /signup are); no TypeScript errors"
+  ],
+  "blocked_reason": null,
+  "findings": "All steps completed. Created app/auth/layout.tsx (oi-site shell with SiteHeader + SiteFooter), app/auth/login/page.tsx (AuthForm mode=login), and app/auth/signup/page.tsx (AuthForm mode=signup). Updated SiteHeader.tsx button hrefs to /auth/login and /auth/signup. Updated AuthForm.tsx switchHref pathnames to /auth/login and /auth/signup. Original /login and /signup routes preserved unchanged. Build passed (exit 0); route table shows ƒ /auth/login and ƒ /auth/signup as dynamic routes alongside the existing ƒ /login and ƒ /signup."
+}
