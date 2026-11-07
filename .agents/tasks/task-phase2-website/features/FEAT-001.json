@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Add the missing library files and component shims that Phase 2 requires: lib/types.ts (re-exports from lib/data.ts), lib/cart-context.tsx (CartContext with useCart), component alias shims for Header.tsx, Footer.tsx, SearchBar.tsx (so any code importing from the paths the task spec names still works), a components/sections/ directory with Hero.tsx, TrustRow.tsx, CategoryGrid.tsx, SellerBanner.tsx shims, and fix the broken <img> tag in HomeView so it uses Next.js <Image> with a correct /assets/ path. FEAT-001 is independent of FEAT-002.",
+  "status": "completed",
+  "steps": [
+    "1. Create lib/types.ts — re-export all existing interfaces and types from lib/data.ts (Product, Shop, Category, TrustSignal, ProductArt, ProductCategory, etc.) plus export a new CartItem interface { product: Product; quantity: number }. This keeps types.ts as a single re-export barrel so nothing breaks.",
+    "2. Create lib/cart-context.tsx — a 'use client' React context. Export: interface CartItem { product: Product; quantity: number }, CartContext (createContext), CartProvider component (wraps children, stores items in useState, exposes addItem(product), removeItem(slug), clearCart, items, totalCount), and useCart hook (throws if used outside CartProvider). Wrap the CartProvider inside AuthProvider in app/layout.tsx so it is available app-wide. Use localStorage for persistence (same pattern as AuthProvider — read on mount via useEffect, write on change).",
+    "3. Update components/marketplace/AddToCart.tsx to use useCart().addItem(product) in addition to the useToast notify call, so the cart actually accumulates items. The component already receives productName but needs the full Product — update the prop to accept product: Product and derive productName from product.name. Update the call site in app/(site)/products/[slug]/page.tsx accordingly (pass product={product} instead of productName={product.name}).",
+    "4. Create components/layout/Header.tsx — a thin re-export shim: export { SiteHeader as Header } from './SiteHeader'. This satisfies any future import from @/components/layout/Header.",
+    "5. Create components/layout/Footer.tsx — a thin re-export shim: export { SiteFooter as Footer } from './SiteFooter'.",
+    "6. Create components/ui/SearchBar.tsx — a thin re-export shim: export { SearchField as SearchBar } from './SearchField'. Also export the SearchFieldProps type as SearchBarProps.",
+    "7. Create components/sections/ directory with four shim files: Hero.tsx (re-exports HomeView's hero section as a named export — actually just re-export the whole HomeView: export { HomeView as Hero } from '@/components/views/HomeView'), TrustRow.tsx (export { TrustRow } from '@/components/marketplace/TrustRow'), CategoryGrid.tsx (export { CategoryGrid } from '@/components/marketplace/CategoryGrid'), SellerBanner.tsx (export { SellerBanner } from '@/components/marketplace/SellerBanner').",
+    "8. Fix broken image in components/views/HomeView.tsx: replace the bare <img> tag with Next.js <Image> component (import Image from 'next/image'). Set src='/assets/brand/oilinga-brand-visual-reference.png', alt='Oilinga marketplace brand vision', fill, style={{ objectFit:'cover', objectPosition:'42% 55%' }}. The .oi-hero__photo container is position:absolute with defined inset so fill works correctly. Remove the filter:saturate(0.94) inline style — it is on the img element in CSS already via .oi-hero__photo img selector in app.css."
+  ],
+  "acceptance_criteria": [
+    "lib/types.ts exists and re-exports all interfaces from lib/data.ts plus CartItem",
+    "lib/cart-context.tsx exports CartProvider, useCart, and CartItem",
+    "app/layout.tsx wraps children in CartProvider (inside ToastProvider, outside or alongside AuthProvider)",
+    "AddToCart.tsx accepts product: Product and calls both useCart().addItem and useToast notify",
+    "components/layout/Header.tsx and Footer.tsx exist as re-export shims",
+    "components/ui/SearchBar.tsx exists as a re-export shim",
+    "components/sections/Hero.tsx, TrustRow.tsx, CategoryGrid.tsx, SellerBanner.tsx exist",
+    "The hero image in HomeView uses Next.js <Image> with src='/assets/brand/oilinga-brand-visual-reference.png'",
+    "yarn build exits 0 with no TypeScript errors"
+  ],
+  "verification": [
+    "cd /Users/mac/Desktop/oilinga && yarn build — must exit 0, all 30 pages generated, no TypeScript errors"
+  ],
+  "blocked_reason": null,
+  "findings": "All steps completed successfully. Build passes: 30 pages generated, TypeScript clean. Key decisions: CartProvider wraps children inside AuthProvider in app/layout.tsx (order: ToastProvider > AuthProvider > CartProvider > children). AddToCart prop changed from productName:string to product:Product — only one call site existed (products/[slug]/page.tsx) which was updated. Next.js Image with fill requires the parent (.oi-hero__photo) to have position:relative/absolute — confirmed it is position:absolute in app.css so fill works. No new dependencies introduced."
+}

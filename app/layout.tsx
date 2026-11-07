@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { CartProvider } from "@/lib/cart-context";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
@@ -85,7 +87,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     return (
         <html lang="en">
             <body>
-                <ToastProvider>{children}</ToastProvider>
+                <ToastProvider>
+                    <AuthProvider>
+                        <CartProvider>{children}</CartProvider>
+                    </AuthProvider>
+                </ToastProvider>
             </body>
         </html>
     );
