@@ -1,23 +1,66 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
-import { ButtonLink } from "@/components/ui/ButtonLink";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { Icon } from "@/components/ui/Icon";
+import Link from "next/link";
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
 import { useAuth } from "./AuthProvider";
+import { AccountSidebarNav } from "./AccountSidebarNav";
+import type { CustomerOrder } from "@/lib/types";
+
+const statusTone: Record<string, BadgeTone> = {
+    Processing: "pending",
+    Shipped: "shipped",
+    Delivered: "delivered",
+};
+
+function readCount(key: string): number {
+    if (typeof window === "undefined") return 0;
+    try {
+        const raw = window.localStorage.getItem(key);
+        if (!raw) return 0;
+        const parsed: unknown = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed.length : 0;
+    } catch {
+        return 0;
+    }
+}
+
+function readOrders(): CustomerOrder[] {
+    if (typeof window === "undefined") return [];
+    try {
+        const raw = window.localStorage.getItem("oilinga_orders");
+        if (!raw) return [];
+        const parsed: unknown = JSON.parse(raw);
+        return Array.isArray(parsed) ? (parsed as CustomerOrder[]) : [];
+    } catch {
+        return [];
+    }
+}
 
 export function AccountView() {
     const router = useRouter();
-    const { user, ready, signOut } = useAuth();
-    const signingOut = useRef(false);
+    const { user, ready } = useAuth();
+
+    const [ordersCount, setOrdersCount] = useState(0);
+    const [wishlistCount, setWishlistCount] = useState(0);
+    const [reviewsCount, setReviewsCount] = useState(0);
+    const [recentOrders, setRecentOrders] = useState<CustomerOrder[]>([]);
 
     useEffect(() => {
-        if (ready && !user && !signingOut.current) {
+        if (ready && !user) {
             router.replace("/login?next=/account");
         }
     }, [ready, user, router]);
+
+    useEffect(() => {
+        if (!user) return;
+        setOrdersCount(readCount("oilinga_orders"));
+        setWishlistCount(readCount("oilinga_wishlist"));
+        setReviewsCount(readCount("oilinga_reviews"));
+        const orders = readOrders();
+        setRecentOrders(orders.slice(-3).reverse());
+    }, [user]);
 
     if (!ready) {
         return (
@@ -35,107 +78,110 @@ export function AccountView() {
         );
     }
 
+    const firstName = user.name.split(/\s+/)[0];
     const joined = new Date(`${user.joined}T00:00:00`).toLocaleDateString("en-GB", {
         month: "long",
         year: "numeric",
     });
-    const firstName = user.name.split(/\s+/)[0];
-
-    function handleSignOut() {
-        signingOut.current = true;
-        signOut();
-        router.push("/");
-    }
 
     return (
-        <section className="oi-account oi-view oi-container" aria-labelledby="account-title">
-            <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Your account" }]} />
+        <section className="oi-view oi-container" aria-labelledby="dashboard-title">
+            <div className="oi-dashboard">
+                <AccountSidebarNav />
 
-            <div className="oi-account__hero">
-                <span className="oi-account__avatar" aria-hidden="true">
-                    {user.initials}
-                </span>
-                <div className="oi-account__intro">
-                    <span className="oi-eyebrow oi-eyebrow--green">Your account</span>
-                    <h1 id="account-title">Welcome back, {firstName}</h1>
-                    <p>
-                        {user.email} <span aria-hidden="true">·</span> Member since {joined}
-                    </p>
+                <div className="oi-dashboard__content">
+                    {/* Welcome banner */}
+                    <div className="oi-account-banner">
+                        <span className="oi-avatar oi-avatar--lg" aria-hidden="true">
+                            {user.initials}
+                        </span>
+                        <div>
+                            <h1 id="dashboard-title" className="oi-account-banner__title">
+                                Welcome back, {firstName}
+                            </h1>
+                            <p className="oi-account-banner__meta">
+                                Member since {joined}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Stat cards */}
+                    <div className="oi-metrics">
+                        <article className="oi-metric">
+                            <small className="oi-metric__label">Orders placed</small>
+                            <strong className="oi-metric__value">{ordersCount}</strong>
+                        </article>
+                        <article className="oi-metric">
+                            <small className="oi-metric__label">Wishlist items</small>
+                            <strong className="oi-metric__value">{wishlistCount}</strong>
+                        </article>
+                        <article className="oi-metric">
+                            <small className="oi-metric__label">Reviews written</small>
+                            <strong className="oi-metric__value">{reviewsCount}</strong>
+                        </article>
+                    </div>
+
+                    {/* Recent orders */}
+                    <article className="oi-dash-card">
+                        <div className="oi-card-head">
+                            <h3 className="oi-card-head__title">Recent orders</h3>
+                            <Link href="/orders" className="oi-card-head__link">
+                                View all →
+                            </Link>
+                        </div>
+                        {recentOrders.length === 0 ? (
+                            <p className="oi-muted">No orders yet.</p>
+                        ) : (
+                            <div className="oi-table-wrap">
+                                <table className="oi-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ORDER</th>
+                                            <th>DATE</th>
+                                            <th>TOTAL</th>
+                                            <th>STATUS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {recentOrders.map((order) => (
+                                            <tr key={order.id}>
+                                                <td>
+                                                    <Link href={`/orders/${order.id}`}>
+                                                        {order.id}
+                                                    </Link>
+                                                </td>
+                                                <td>
+                                                    {new Date(order.date).toLocaleDateString(
+                                                        "en-GB",
+                                                        {
+                                                            day: "numeric",
+                                                            month: "short",
+                                                            year: "numeric",
+                                                        },
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    ₦
+                                                    {order.subtotal.toLocaleString("en-NG")}
+                                                </td>
+                                                <td>
+                                                    <Badge
+                                                        tone={
+                                                            statusTone[order.status] ?? "neutral"
+                                                        }
+                                                    >
+                                                        {order.status}
+                                                    </Badge>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </article>
                 </div>
-                <Button variant="outline" onClick={handleSignOut}>
-                    <Icon name="logout" size={16} />
-                    Log out
-                </Button>
             </div>
-
-            <div className="oi-account__stats">
-                <article className="oi-account__stat">
-                    <small>Orders placed</small>
-                    <strong>0</strong>
-                    <span>Your order history will appear here.</span>
-                </article>
-                <article className="oi-account__stat">
-                    <small>Saved products</small>
-                    <strong>0</strong>
-                    <span>Tap the heart on a product to save it.</span>
-                </article>
-                <article className="oi-account__stat">
-                    <small>Shops followed</small>
-                    <strong>0</strong>
-                    <span>Follow a shop to see new pressing runs.</span>
-                </article>
-            </div>
-
-            <div className="oi-account__grid">
-                <article className="oi-account__card">
-                    <span className="oi-account__card-icon">
-                        <Icon name="bag" size={20} />
-                    </span>
-                    <h2>Start your first order</h2>
-                    <p>
-                        Browse fresh palm oil, groundnut oil and wholesale sizes from verified
-                        sellers.
-                    </p>
-                    <ButtonLink href="/marketplace" variant="primary" size="sm">
-                        Explore marketplace
-                        <Icon name="arrow-right" size={14} />
-                    </ButtonLink>
-                </article>
-
-                <article className="oi-account__card">
-                    <span className="oi-account__card-icon">
-                        <Icon name="store" size={20} />
-                    </span>
-                    <h2>Discover shops</h2>
-                    <p>
-                        Meet the producers and co-operatives behind every bottle in the shop
-                        directory.
-                    </p>
-                    <ButtonLink href="/shops" variant="outline" size="sm">
-                        Browse shops
-                        <Icon name="arrow-right" size={14} />
-                    </ButtonLink>
-                </article>
-
-                <article className="oi-account__card">
-                    <span className="oi-account__card-icon">
-                        <Icon name="sparkle" size={20} />
-                    </span>
-                    <h2>Sell on Oilinga</h2>
-                    <p>
-                        Open a storefront, list your pressing runs and reach buyers across Africa.
-                    </p>
-                    <ButtonLink href="/seller" variant="outline" size="sm">
-                        Visit seller portal
-                        <Icon name="arrow-right" size={14} />
-                    </ButtonLink>
-                </article>
-            </div>
-
-            <p className="oi-account__note">
-                Preview authentication: your account is stored in this browser for Phase 2.
-                Connecting a production identity provider is a later phase.
-            </p>
         </section>
     );
 }

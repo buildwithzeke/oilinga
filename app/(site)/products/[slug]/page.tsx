@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AddToCart } from "@/components/marketplace/AddToCart";
 import { ProductGrid } from "@/components/marketplace/ProductCard";
+import { ProductReviews } from "@/components/marketplace/ProductReviews";
 import { ShopCard } from "@/components/marketplace/ShopCard";
 import { Badge } from "@/components/ui/Badge";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -160,6 +161,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
             >
                 <ProductGrid products={related} />
             </Section>
+
+            <ProductReviews productSlug={product.slug} productName={product.name} />
 
             <div className="oi-pdp__back">
                 <ButtonLink href="/marketplace" variant="outline" size="sm">
