@@ -1,7 +1,10 @@
 {
   "task_id": "task-phase2-website",
   "task_description": "Complete Phase 2 of the Oilinga public website: add CartContext, lib/types.ts, component alias shims (Header.tsx, Footer.tsx, SearchBar.tsx, sections/), auth route aliases at /auth/login and /auth/signup, and fix the broken image path. The core pages, components, data layer and design-system CSS all already exist and the build passes.",
-  "status": "pending",
-  "feature_order": ["FEAT-001", "FEAT-002"],
+  "status": "completed",
+  "feature_order": [
+    "FEAT-001",
+    "FEAT-002"
+  ],
   "blocked_reason": null
 }
